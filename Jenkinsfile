@@ -62,7 +62,7 @@ pipeline {
         stage('Run uat image') {
             steps{
                 sh "docker stop petclinic-uat && docker rm petclinic-uat"
-                sh 'docker run -d --name petclinic-uat -p 8090:8080 petclinic-project'
+                sh 'docker run -d --name petclinic-uat -p 8190:8080 petclinic-project'
             }
         }
 

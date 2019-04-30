@@ -34,6 +34,7 @@ pipeline {
                     }
             }
         }
+        }
         stage('Publish in Nexus') {
             steps {
                 nexusPublisher nexusInstanceId: 'Nexus',
@@ -54,8 +55,21 @@ pipeline {
                 sh 'docker run -d --name petclinic-test -p 8090:8080 petclinic-project'
             }
         }
-
-
-
+        stage('Parallel Stage Prod') {
+            parallel {
+                   stage('uat') {
+                        steps{
+                            // Run the maven build with checkstyle
+                           sh 'docker run -d --name petclinic-uat -p 8090:8080 petclinic-project'
+                         }
+                     }
+                    stage('prod') {
+                        steps {
+                           sh 'docker run -d --name petclinic-prod -p 8090:8080 petclinic-project'
+                         }
+                    }
+            }
+        }
     }
+
 }

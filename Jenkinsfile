@@ -34,7 +34,7 @@ pipeline {
                     }
             }
         }
-        }
+
         stage('Publish in Nexus') {
             steps {
                 nexusPublisher nexusInstanceId: 'Nexus',

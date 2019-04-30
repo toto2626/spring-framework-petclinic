@@ -55,13 +55,15 @@ pipeline {
         parallel {
         stage('Run Test image') {
             steps{
-                sh "docker stop petclinic-test && docker rm petclinic-test"
+                sh 'docker ps -f name=petclinic-test -q | xargs --no-run-if-empty docker container stop''
+                sh 'docker container ls -a -fname=petclinic-test -q | xargs -r docker container rm'
                 sh 'docker run -d --name petclinic-test -p 8090:8080 petclinic-project'
             }
         }
         stage('Run uat image') {
             steps{
-                sh "docker stop petclinic-uat && docker rm petclinic-uat"
+                sh 'docker ps -f name=petclinic-uat -q | xargs --no-run-if-empty docker container stop''
+                sh 'docker container ls -a -fname=petclinic-uat -q | xargs -r docker container rm'
                 sh 'docker run -d --name petclinic-uat -p 8190:8080 petclinic-project'
             }
         }

@@ -1,5 +1,5 @@
 node {
     stage ('stage 1') {
-        echo "test"
+        echo "my test"
     }
 }

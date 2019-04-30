@@ -3,13 +3,13 @@ pipeline {
     tools {
         maven "maven 3.6"
     }
-    options {
-        parallelsAlwaysFailFast()
-    }
      environment {
         NEXUS_ARTIFACT_VERSION= "${env.BUILD_NUMBER}"
     }
 
+    options {
+        parallelsAlwaysFailFast()
+    }
     stages {
         stage('Non-Parallel Stage') {
             steps {
@@ -26,14 +26,15 @@ pipeline {
                      }
                     stage('Sonarqube') {
                         steps {
-                            withSonarQubeEnv('SonarQube') {
+                            //withSonarQubeEnv('SonarQube') {
                             //sh "mvn  clean package sonar:sonar -Dsonar.host_url=$SONAR_HOST_URL "
-                             echo "Attention la connexion de sonar ne marche pas"
-                            }
+                            echo "SonarQube"
+
                          }
                     }
             }
         }
+
         stage('Publish in Nexus') {
             steps {
                 nexusPublisher nexusInstanceId: 'Nexus',
@@ -42,7 +43,6 @@ pipeline {
                 mavenAssetList: [[classifier: '', extension: '', filePath: 'target/petclinic.war']], mavenCoordinate: [artifactId: 'spring-framework-petclinic', groupId: 'org.springframework.samples', packaging: 'war', version: NEXUS_ARTIFACT_VERSION]]]
             }
         }
-
         stage('Build image') {
             steps{
                 script{
@@ -52,12 +52,24 @@ pipeline {
         }
         stage('Run Test image') {
             steps{
-                sh 'check_test.sh'
                 sh 'docker run -d --name petclinic-test -p 8090:8080 petclinic-project'
             }
         }
-
-
-
+        stage('Parallel Stage Prod') {
+            parallel {
+                   stage('uat') {
+                        steps{
+                            // Run the maven build with checkstyle
+                           sh 'docker run -d --name petclinic-uat -p 8090:8080 petclinic-project'
+                         }
+                     }
+                    stage('prod') {
+                        steps {
+                           sh 'docker run -d --name petclinic-prod -p 8090:8080 petclinic-project'
+                         }
+                    }
+            }
+        }
     }
+
 }

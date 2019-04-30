@@ -52,7 +52,6 @@ pipeline {
         }
         stage('Run Test image') {
             steps{
-                sh 'check_test.sh'
                 sh 'docker run -d --name petclinic-test -p 8090:8080 petclinic-project'
             }
         }

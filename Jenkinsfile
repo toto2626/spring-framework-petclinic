@@ -52,11 +52,7 @@ pipeline {
         }
         stage('Run Test image') {
             steps{
-                def out = sh script: 'CONTAINER_NAME="petclinic-test"
-                                      OLD="$(docker ps --all --quiet --filter=name="$CONTAINER_NAME")"
-                                      if [ -n "$OLD" ]; then
-                                             docker stop $OLD && docker rm $OLD
-                                      fi', returnStdout: true
+                sh "docker stop petclinic-test && docker rm petclinic-test"
                 sh 'docker run -d --name petclinic-test -p 8090:8080 petclinic-project'
             }
         }

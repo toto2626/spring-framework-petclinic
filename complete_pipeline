@@ -9,12 +9,12 @@ pipeline {
      environment {
         NEXUS_ARTIFACT_VERSION= "${env.BUILD_NUMBER}"
     }
-    def essai ='Jenkins'
+
 
     stages {
         stage('Non-Parallel Stage') {
             steps {
-                echo 'This stage will be executed first ${essai}'
+                echo 'This stage will be executed first '
             }
         }
         stage('Parallel Stage') {
@@ -77,4 +77,5 @@ pipeline {
         }
 
     }
+}
 }

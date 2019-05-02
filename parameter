@@ -1,0 +1,14 @@
+pipeline{
+ agent any
+    parameters {
+        string( name:'Test',  defaultValue:'Jenkins')
+    ${params.Test}
+    }
+
+
+    post{
+        failure{
+           mail to
+        }
+    }
+}
